@@ -16,7 +16,7 @@ func handleRequest(c *controllers.Controller, m *middlewares.Middleware) {
 	myRouter := mux.NewRouter()
 
 	myRouter.HandleFunc("/pizza", c.AddNewPizza).Methods("POST")          //curl -d "{\"Name\":\"Stodola\", \"Size\":\"45\"}" -X POST localhost:8081/pizza
-	myRouter.HandleFunc("/opinia", c.AddNewOpinion).Methods("POST")       //curl -d "{\"mainbase\":\"6100533dcb7ebec302f8f773\", \"score\":\"23\", \"opinions\":\"ale pizzocha\"}" -X POST localhost:8081/opinia
+	myRouter.HandleFunc("/opinion", c.AddNewOpinion).Methods("POST")      //curl -d "{\"mainbase\":\"6100533dcb7ebec302f8f773\", \"score\":\"23\", \"opinions\":\"ale pizzocha\"}" -X POST localhost:8081/opinion
 	myRouter.HandleFunc("/pizza", c.ListPizzasWithOpinins).Methods("GET") //curl localhost:8081/pizza
 	myRouter.HandleFunc("/pizza", c.DeletePizza).Methods("DELETE")        //curl -d "{\"Name\":\"K2\"}" -X POST localhost:8081/pizza
 	myRouter.HandleFunc("/pizza", c.UpdatePizza).Methods("PUT")           //curl -d "{\"Name\":\"K2\", \"Size\":\"60\"}" -X POST localhost:8081/pizza

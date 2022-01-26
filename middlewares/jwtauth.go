@@ -25,7 +25,7 @@ func (m *Middleware) IsAutorised(next http.Handler) http.Handler {
 			if err == http.ErrNoCookie {
 				fmt.Println("Najpierw się zaloguj")
 			}
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		tokenStr := cookie.Value

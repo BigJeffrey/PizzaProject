@@ -3,7 +3,6 @@ package postgresqldao
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -36,8 +35,7 @@ func (m *PostgreSql) connect() {
 	connectionstring := "host=130.61.54.93 port=49153 user=postgres dbname=pizzas sslmode=disable password=" + pgPass
 	m.client, err = sql.Open("postgres", connectionstring)
 	if err != nil {
-		fmt.Println("To jest brak połaczenia z bazą")
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 

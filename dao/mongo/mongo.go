@@ -52,8 +52,8 @@ func (m *Mongo) GetListaPizzy() *mongo.Collection {
 }
 
 func (m *Mongo) GetOpinie() *mongo.Collection {
-	opinie := m.client.Database("pizzowaBaza")
-	return opinie.Collection("opinie")
+	opinions := m.client.Database("pizzowaBaza")
+	return opinions.Collection("opinie")
 }
 
 func (m *Mongo) GetUsers() *mongo.Collection {

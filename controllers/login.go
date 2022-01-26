@@ -25,14 +25,14 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	var daneLogowania models.User
+	var loginData models.User
 
-	err = json.Unmarshal(body, &daneLogowania)
+	err = json.Unmarshal(body, &loginData)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	result := c.Dao.Login(daneLogowania)
+	result := c.Dao.Login(loginData)
 
 	if err != nil {
 		log.Fatal(err)
@@ -52,7 +52,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 			})
 
 		fmt.Println("Zalogowany poprawnie")
-		rabbit.SendRabbitMessage(daneLogowania.Email, "login")
+		rabbit.SendRabbitMessage(loginData.Email, "login")
 	} else {
 		fmt.Println("Nie udana próba logowania")
 	}

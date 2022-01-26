@@ -17,21 +17,21 @@ func (c *Controller) AddNewOpinion(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	var nowaOpinia models.Opinion
-	err = json.Unmarshal(body, &nowaOpinia)
+	var newOpinion models.Opinion
+	err = json.Unmarshal(body, &newOpinion)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	nowaResult, err := c.Dao.AddNewOpinion(nowaOpinia)
+	newResult, err := c.Dao.AddNewOpinion(newOpinion)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(nowaResult)
+	fmt.Println(newResult)
 	fmt.Println("ok")
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(nowaOpinia)
+	json.NewEncoder(w).Encode(newOpinion)
 }

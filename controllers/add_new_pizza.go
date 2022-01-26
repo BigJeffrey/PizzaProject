@@ -10,9 +10,9 @@ import (
 func (c *Controller) AddNewPizza(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Dodawnie nowej pizzy")
 
-	nowaPizza := ReadBody(r)
+	newPizza := ReadBody(r)
 
-	insertedID, err := c.Dao.AddNewPizza(nowaPizza)
+	insertedID, err := c.Dao.AddNewPizza(newPizza)
 
 	if err != nil {
 		log.Fatal(err)
@@ -24,5 +24,5 @@ func (c *Controller) AddNewPizza(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(nowaPizza)
+	json.NewEncoder(w).Encode(newPizza)
 }
