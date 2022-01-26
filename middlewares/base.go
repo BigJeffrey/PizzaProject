@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"quickstart/dao/interfaces"
+	"pizza/dao/interfaces"
 )
 
 type Middleware struct {

@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"quickstart/dao/interfaces"
-	"quickstart/models"
+	"pizza/dao/interfaces"
+	"pizza/models"
 )
 
 type Controller struct {

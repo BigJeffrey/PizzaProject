@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"quickstart/models"
+	"pizza/models"
 )
 
 type AppDao interface {

@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"quickstart/models"
-	"quickstart/rabbit"
+	"pizza/models"
+	"pizza/rabbit"
 
 	"time"
 

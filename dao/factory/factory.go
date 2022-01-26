@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 
-	"quickstart/dao/interfaces"
-	mongodao "quickstart/dao/mongo"
-	postgresqldao "quickstart/dao/postgresql"
+	"pizza/dao/interfaces"
+	mongodao "pizza/dao/mongo"
+	postgresqldao "pizza/dao/postgresql"
 )
 
 type FactoryDao struct {

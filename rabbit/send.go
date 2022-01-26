@@ -2,12 +2,14 @@ package rabbit
 
 import (
 	"log"
+	"os"
 
 	"github.com/streadway/amqp"
 )
 
 func SendRabbitMessage(body string, name string) {
-	connRabbit, err := amqp.Dial("amqp://130.61.54.93:5672/")
+	rabPass := os.Getenv("RABP")
+	connRabbit, err := amqp.Dial("amqp://" + rabPass + "@130.61.54.93:5672/")
 	if err != nil {
 		log.Fatal(err)
 	}

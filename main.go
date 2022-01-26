@@ -1,13 +1,13 @@
 package main
 
 import (
-	"quickstart/controllers"
-	"quickstart/middlewares"
+	"pizza/controllers"
+	"pizza/middlewares"
 
 	"context"
 	"log"
 	"net/http"
-	"quickstart/dao/factory"
+	"pizza/dao/factory"
 
 	"github.com/gorilla/mux"
 )

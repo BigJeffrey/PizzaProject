@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"quickstart/models"
-	"quickstart/rabbit"
+	"pizza/models"
+	"pizza/rabbit"
 )
 
 func (c *Controller) AddNewUser(w http.ResponseWriter, r *http.Request) {

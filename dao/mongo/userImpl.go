@@ -3,7 +3,7 @@ package mongodao
 import (
 	"fmt"
 	"log"
-	"quickstart/models"
+	"pizza/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

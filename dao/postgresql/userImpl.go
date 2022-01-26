@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"quickstart/models"
+	"pizza/models"
 )
 
 func (m *PostgreSql) AddNewPizza(p models.Pizza) (interface{}, error) {

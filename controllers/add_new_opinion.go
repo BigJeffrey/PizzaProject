@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"quickstart/models"
+	"pizza/models"
 )
 
 func (c *Controller) AddNewOpinion(w http.ResponseWriter, r *http.Request) {
