@@ -70,11 +70,12 @@ type ListPizzaOpinions struct {
 	Score    string
 }
 
-func (m *PostgreSql) ListPizzasWithOpinins() {
+func (m *PostgreSql) ListPizzasWithOpinins() ([]models.Together, error) {
 	fmt.Println("postgresql")
 
 	sqlStatement := `select p.name, p.size, o.score, o.opinion from pizza p, opinions o where o.pizzaid=p.id`
 
+	var jsoned []byte
 	rows, err := m.client.Query(sqlStatement)
 
 	if err != nil {
@@ -91,12 +92,13 @@ func (m *PostgreSql) ListPizzasWithOpinins() {
 			log.Fatalf("Unable to scan the row. %v", err)
 		}
 
-		jsoned, err := json.Marshal(ListPizzaOpinions{Name: pizza.Name, Size: pizza.Size, Opinions: opinion.Opinions, Score: opinion.Score})
+		jsoned, err = json.Marshal(ListPizzaOpinions{Name: pizza.Name, Size: pizza.Size, Opinions: opinion.Opinions, Score: opinion.Score})
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println(string(jsoned))
 	}
+	return nil, nil
 }
 
 func (m *PostgreSql) Login(u models.User) bool {

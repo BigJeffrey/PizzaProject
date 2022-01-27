@@ -19,3 +19,10 @@ type Opinion struct {
 	Opinions string      `bson:"opinion,omitempty"`
 	PizzaId  interface{} `bson:"pizzaid,omitempty"`
 }
+
+type Together struct {
+	MName  string
+	MSize  string
+	OOpin  string
+	OScore string
+}

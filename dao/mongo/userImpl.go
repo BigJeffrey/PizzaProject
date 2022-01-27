@@ -11,7 +11,7 @@ import (
 func (m *Mongo) AddNewPizza(p models.Pizza) (interface{}, error) {
 	fmt.Println("Dodawanie pizzy")
 
-	pizzaResult, err := m.GetListaPizzy().InsertOne(m.ctx, bson.D{
+	pizzaResult, err := m.GetPizzaList().InsertOne(m.ctx, bson.D{
 		{Key: "Name", Value: p.Name},
 		{Key: "Size", Value: p.Size},
 	})
@@ -28,7 +28,7 @@ func (m *Mongo) UpdatePizza(p models.Pizza) (interface{}, error) {
 		}},
 	}
 
-	result, err := m.GetListaPizzy().UpdateOne(m.ctx, bson.M{"Name": p.Name}, updatedBson)
+	result, err := m.GetPizzaList().UpdateOne(m.ctx, bson.M{"Name": p.Name}, updatedBson)
 
 	return result, err
 }
@@ -36,15 +36,15 @@ func (m *Mongo) UpdatePizza(p models.Pizza) (interface{}, error) {
 func (m *Mongo) DeletePizza(name string) (interface{}, error) {
 	fmt.Println("Usuwanie pizzy")
 
-	result, err := m.GetListaPizzy().DeleteOne(m.ctx, bson.M{"Name": name})
+	result, err := m.GetPizzaList().DeleteOne(m.ctx, bson.M{"Name": name})
 
 	return result, err
 }
 
-func (m *Mongo) ListPizzasWithOpinins() {
+func (m *Mongo) ListPizzasWithOpinins() ([]models.Together, error) {
 	fmt.Println("Lista pizzy z opiniami")
 
-	cursor, err := m.GetListaPizzy().Find(m.ctx, bson.M{})
+	cursor, err := m.GetPizzaList().Find(m.ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,8 +52,10 @@ func (m *Mongo) ListPizzasWithOpinins() {
 	var main models.Pizza
 	var opin models.Opinion
 
+	var tab []models.Together
+
 	for cursor.Next(m.ctx) {
-		cursor2, err := m.GetOpinie().Find(m.ctx, bson.M{})
+		cursor2, err := m.GetOpinions().Find(m.ctx, bson.M{})
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -64,26 +66,32 @@ func (m *Mongo) ListPizzasWithOpinins() {
 		}
 
 		for cursor2.Next(m.ctx) {
-
 			err := cursor2.Decode(&opin)
 			if err != nil {
 				log.Fatal(err)
 			}
+			pid := fmt.Sprint("ObjectID(\"", opin.PizzaId, "\")")
+			mid := fmt.Sprint(main.ID)
 
-			if opin.PizzaId == main.ID {
+			if pid == mid {
 				s := fmt.Sprintf("%s, %s, %s, %s", main.Name, main.Size, opin.Opinions, opin.Score)
 				fmt.Println(s)
+				tab = append(tab, models.Together{
+					MName:  main.Name,
+					MSize:  main.Size,
+					OOpin:  opin.Opinions,
+					OScore: opin.Score,
+				})
 			}
 		}
 	}
-
-	fmt.Println("ok")
+	return tab, nil
 }
 
 func (m *Mongo) AddNewOpinion(o models.Opinion) (interface{}, error) {
 	fmt.Println("Dodawanie opinii")
 
-	nowaResult, err := m.GetOpinie().InsertOne(m.ctx, bson.D{
+	nowaResult, err := m.GetOpinions().InsertOne(m.ctx, bson.D{
 		{Key: "Score", Value: o.Score},
 		{Key: "Opinion", Value: o.Opinions},
 		{Key: "PizzaId", Value: o.PizzaId},

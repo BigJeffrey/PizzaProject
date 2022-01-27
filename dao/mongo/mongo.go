@@ -48,12 +48,12 @@ func (m *Mongo) Disconnect() {
 	m.client.Disconnect(m.ctx)
 }
 
-func (m *Mongo) GetListaPizzy() *mongo.Collection {
+func (m *Mongo) GetPizzaList() *mongo.Collection {
 	pizzaDatabase := m.client.Database("pizzowaBaza")
 	return pizzaDatabase.Collection("pizze")
 }
 
-func (m *Mongo) GetOpinie() *mongo.Collection {
+func (m *Mongo) GetOpinions() *mongo.Collection {
 	opinions := m.client.Database("pizzowaBaza")
 	return opinions.Collection("opinie")
 }
