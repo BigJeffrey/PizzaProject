@@ -49,8 +49,8 @@ func (m *Mongo) ListPizzasWithOpinins() {
 		log.Fatal(err)
 	}
 
-	var main models.PizzaMongo
-	var opin models.OpinionMongo
+	var main models.Pizza
+	var opin models.Opinion
 
 	for cursor.Next(m.ctx) {
 		cursor2, err := m.GetOpinie().Find(m.ctx, bson.M{})
@@ -84,9 +84,9 @@ func (m *Mongo) AddNewOpinion(o models.Opinion) (interface{}, error) {
 	fmt.Println("Dodawanie opinii")
 
 	nowaResult, err := m.GetOpinie().InsertOne(m.ctx, bson.D{
-		{Key: "MainBase", Value: o.PizzaId},
-		{Key: "Score", Value: o.Opinions},
-		{Key: "Opinions", Value: o.Score},
+		{Key: "Score", Value: o.Score},
+		{Key: "Opinion", Value: o.Opinions},
+		{Key: "PizzaId", Value: o.PizzaId},
 	})
 
 	return nowaResult, err

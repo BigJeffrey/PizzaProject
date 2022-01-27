@@ -32,7 +32,8 @@ func NewMongo(ctx context.Context) *Mongo {
 func (m *Mongo) connect() {
 	var err error
 	mgPass := os.Getenv("PGP")
-	m.client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://pizza:" + mgPass + "@130.61.54.93:27017"))
+	conStr := "mongodb://pizza:" + mgPass + "@130.61.54.93:27017"
+	m.client, err = mongo.NewClient(options.Client().ApplyURI(conStr))
 	if err != nil {
 		log.Fatal(err)
 	}
