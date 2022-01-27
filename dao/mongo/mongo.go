@@ -3,6 +3,7 @@ package mongodao
 import (
 	"context"
 	"log"
+	"os"
 	"sync"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -30,8 +31,8 @@ func NewMongo(ctx context.Context) *Mongo {
 
 func (m *Mongo) connect() {
 	var err error
-
-	m.client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://admin_user:admin_password@77.55.216.72:27017"))
+	mgPass := os.Getenv("PGP")
+	m.client, err = mongo.NewClient(options.Client().ApplyURI("mongodb://pizza:" + mgPass + "@130.61.54.93:27017"))
 	if err != nil {
 		log.Fatal(err)
 	}

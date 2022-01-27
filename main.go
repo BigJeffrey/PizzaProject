@@ -33,7 +33,7 @@ func main() {
 
 	factoryDao := factory.FactoryDao{Ctx: ctx}
 
-	dao := factoryDao.FactoryDao("postgresql") //postgresql or mongodb
+	dao := factoryDao.FactoryDao("mongodb") //postgresql or mongodb
 
 	defer dao.Disconnect()
 
