@@ -48,7 +48,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 			&http.Cookie{
 				Name:    "token",
 				Value:   validToken,
-				Expires: time.Now().Add(time.Minute * 3),
+				Expires: time.Now().Add(time.Minute * 10),
 			})
 
 		fmt.Println("Zalogowany poprawnie")

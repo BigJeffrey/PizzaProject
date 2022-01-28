@@ -21,8 +21,11 @@ type Opinion struct {
 }
 
 type Together struct {
-	MName  string
-	MSize  string
-	OOpin  string
-	OScore string
+	MName string
+	MSize string
+	Ops   []Opinion
+}
+
+type ListPizzaOpinions struct {
+	ListPizzaWithOpinions []Together
 }

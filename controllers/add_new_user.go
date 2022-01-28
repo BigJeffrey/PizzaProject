@@ -38,7 +38,7 @@ func (c *Controller) AddNewUser(w http.ResponseWriter, r *http.Request) {
 	rabbit.SendRabbitMessage(newUser.Email, "new_user")
 
 	fmt.Println(insertedID)
-
+	fmt.Println("ok")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)
