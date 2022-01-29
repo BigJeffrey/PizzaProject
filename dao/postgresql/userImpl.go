@@ -57,44 +57,74 @@ func (m *PostgreSql) DeletePizza(name string) (interface{}, error) {
 	return res, err
 }
 
-type ListPizzaOpinions struct {
-	Name     string
-	Size     string
-	Opinions string
-	Score    string
-}
-
 func (m *PostgreSql) ListPizzasWithOpinins() (models.ListPizzaOpinions, error) {
-	sqlStatement := `select p.name, p.size, o.score, o.opinion from pizza p, opinions o where o.pizzaid=p.id`
-	var listPO models.ListPizzaOpinions
-	var tab []models.Together
-	var opinTab []models.Opinion
-
-	rows, err := m.client.Query(sqlStatement)
-
+	//sqlStatement := `select p.name, p.size, o.score, o.opinion from pizza p, opinions o where o.pizzaid=p.id`
+	sqlStatementAllPizza := `select * from pizza`
+	sqlStatementOpinions := `select * from opinions`
+	pizzas, err := m.client.Query(sqlStatementAllPizza)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+	}
+	opinions, err := m.client.Query(sqlStatementOpinions)
+	if err != nil {
+		log.Println(err)
 	}
 
-	for rows.Next() {
-		var pizza models.Pizza
-		var opinion models.Opinion
-
-		err = rows.Scan(&pizza.Name, &pizza.Size, &opinion.Score, &opinion.Opinions)
-
+	var pizza models.Pizza
+	var opinion models.Opinion
+	var tabPizza []models.Pizza
+	var tabOpinion []models.Opinion
+	for pizzas.Next() {
+		err = pizzas.Scan(&pizza.ID, &pizza.Name, &pizza.Size)
 		if err != nil {
-			log.Fatalf("Unable to scan the row. %v", err)
+			log.Println(err)
 		}
-		opinTab = append(opinTab, models.Opinion{
+		tabPizza = append(tabPizza, models.Pizza{
+			ID:   pizza.ID,
+			Name: pizza.Name,
+			Size: pizza.Size,
+		})
+	}
+	for opinions.Next() {
+		err = opinions.Scan(&opinion.ID, &opinion.Opinions, &opinion.Score, &opinion.PizzaId)
+		if err != nil {
+			log.Println(err)
+		}
+		tabOpinion = append(tabOpinion, models.Opinion{
+			ID:       opinion.ID,
 			Score:    opinion.Score,
 			Opinions: opinion.Opinions,
-		})
-		tab = append(tab, models.Together{
-			MName: pizza.Name,
-			MSize: pizza.Size,
-			Ops:   opinTab,
+			PizzaId:  opinion.PizzaId,
 		})
 	}
+
+	var opinTab []models.Opinion
+	var tab []models.Together
+	var listPO models.ListPizzaOpinions
+
+	for _, val := range tabPizza {
+		for _, val2 := range tabOpinion {
+			if val2.PizzaId == val.ID {
+				opinTab = append(opinTab, models.Opinion{
+					ID:       val2.ID,
+					Score:    val2.Score,
+					Opinions: val2.Opinions,
+					PizzaId:  val2.PizzaId,
+				})
+			}
+		}
+		tab = append(tab, models.Together{
+			MName: val.Name,
+			MSize: val.Size,
+			Ops:   opinTab,
+		})
+		opinTab = nil
+	}
+
+	listPO = models.ListPizzaOpinions{
+		ListPizzaWithOpinions: tab,
+	}
+
 	listPO = models.ListPizzaOpinions{
 		ListPizzaWithOpinions: tab,
 	}
