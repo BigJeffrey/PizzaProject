@@ -2,9 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"pizza/models"
 	"pizza/rabbit"
@@ -17,31 +15,33 @@ import (
 var mySignedKey = []byte("mySecredPhrase")
 
 func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Logowanie")
-
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
 	var loginData models.User
 
 	err = json.Unmarshal(body, &loginData)
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
-	result := c.Dao.Login(loginData)
+	result, err := c.Dao.Login(loginData)
 
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
 	if result {
 		validToken, err := generateJWT()
 		if err != nil {
-			log.Fatal(err)
+			ReturnMessage("Something went wrong", err, w, http.StatusInternalServerError)
+			return
 		}
 
 		http.SetCookie(w,
@@ -51,10 +51,10 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 				Expires: time.Now().Add(time.Minute * 10),
 			})
 
-		fmt.Println("Zalogowany poprawnie")
+		ReturnMessage("Użytkownik zalogowany porpawnie", nil, w, http.StatusBadRequest)
 		rabbit.SendRabbitMessage(loginData.Email, "login")
 	} else {
-		fmt.Println("Nie udana próba logowania")
+		ReturnMessage("Nie udana próba logowania", err, w, http.StatusUnauthorized)
 	}
 }
 
@@ -62,7 +62,7 @@ func generateJWT() (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["autorized"] = true
-	claims["exp"] = time.Now().Add(time.Minute * 3).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * 10).Unix()
 
 	tokenString, err := token.SignedString(mySignedKey)
 	if err != nil {

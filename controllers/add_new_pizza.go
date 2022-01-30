@@ -1,28 +1,21 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 )
 
 func (c *Controller) AddNewPizza(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Dodawnie nowej pizzy")
-
-	newPizza := ReadBody(r)
-
-	insertedID, err := c.Dao.AddNewPizza(newPizza)
+	newPizza, err := ReadBody(r, w)
+	if err != nil {
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
+	}
+	_, err = c.Dao.AddNewPizza(newPizza)
 
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
-	fmt.Println(insertedID)
-
-	fmt.Println("ok")
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newPizza)
+	ReturnMessage("Pizza was succesfully added", nil, w, http.StatusCreated)
 }

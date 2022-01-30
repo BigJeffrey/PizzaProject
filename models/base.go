@@ -29,3 +29,7 @@ type Together struct {
 type ListPizzaOpinions struct {
 	ListPizzaWithOpinions []Together
 }
+
+type ErrorJson struct {
+	Messagge string
+}

@@ -2,7 +2,6 @@ package mongodao
 
 import (
 	"context"
-	"log"
 	"os"
 	"sync"
 
@@ -29,19 +28,20 @@ func NewMongo(ctx context.Context) *Mongo {
 	return instance
 }
 
-func (m *Mongo) connect() {
+func (m *Mongo) connect() error {
 	var err error
 	mgPass := os.Getenv("PGP")
 	conStr := "mongodb://pizza:" + mgPass + "@130.61.54.93:27017"
 	m.client, err = mongo.NewClient(options.Client().ApplyURI(conStr))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	err = m.client.Connect(m.ctx)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func (m *Mongo) Disconnect() {

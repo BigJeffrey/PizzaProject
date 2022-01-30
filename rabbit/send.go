@@ -1,24 +1,23 @@
 package rabbit
 
 import (
-	"log"
 	"os"
 
 	"github.com/streadway/amqp"
 )
 
-func SendRabbitMessage(body string, name string) {
+func SendRabbitMessage(body string, name string) error {
 	rabPass := os.Getenv("RABP")
 	connRabbit, err := amqp.Dial("amqp://" + rabPass + "@130.61.54.93:5672/")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer connRabbit.Close()
 
 	chRabbit, err := connRabbit.Channel()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer chRabbit.Close()
@@ -32,7 +31,7 @@ func SendRabbitMessage(body string, name string) {
 		nil,   // arguments
 	)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	err = chRabbit.Publish(
@@ -45,6 +44,7 @@ func SendRabbitMessage(body string, name string) {
 			Body:        []byte(body),
 		})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }

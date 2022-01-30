@@ -1,24 +1,20 @@
 package controllers
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 )
 
 func (c *Controller) DeletePizza(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Usuwanie pizzy")
-
-	deleted := ReadBody(r)
-
-	result, err := c.Dao.DeletePizza(string(deleted.Name))
+	deleted, err := ReadBody(r, w)
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
+	}
+	_, err = c.Dao.DeletePizza(string(deleted.Name))
+	if err != nil {
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
-	fmt.Println(result)
-
-	fmt.Println("ok")
-
-	w.WriteHeader(http.StatusNoContent)
+	ReturnMessage("Pizza was successfully deleted", nil, w, http.StatusNoContent)
 }

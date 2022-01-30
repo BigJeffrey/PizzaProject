@@ -2,44 +2,39 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"pizza/models"
 	"pizza/rabbit"
 )
 
 func (c *Controller) AddNewUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Dodawnie nowego usera")
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
-	fmt.Println(string(body))
+
 	var newUser models.User
 
 	err = json.Unmarshal(body, &newUser)
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
-	insertedID, err := c.Dao.AddNewUser(newUser)
-
-	fmt.Println(newUser.Username)
-	fmt.Println(newUser.Password)
-	fmt.Println(newUser.Email)
+	_, err = c.Dao.AddNewUser(newUser)
 
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
-	rabbit.SendRabbitMessage(newUser.Email, "new_user")
+	err = rabbit.SendRabbitMessage(newUser.Email, "new_user")
+	if err != nil {
+		ReturnMessage("Unable to send email but user was succesfully added", err, w, http.StatusInternalServerError)
+		return
+	}
 
-	fmt.Println(insertedID)
-	fmt.Println("ok")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newUser)
+	ReturnMessage("New user was succesfully added and welcome email was sent", nil, w, http.StatusCreated)
 }

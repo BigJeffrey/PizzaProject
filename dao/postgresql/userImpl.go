@@ -11,9 +11,9 @@ func (m *PostgreSql) AddNewPizza(p models.Pizza) (interface{}, error) {
 	var id int64
 	err := m.client.QueryRow(sqlStatement, p.Name, p.Size).Scan(&id)
 	if err != nil {
-		fmt.Println(err)
+		return 0, nil
 	}
-	return id, err
+	return id, nil
 }
 
 func (m *PostgreSql) AddNewOpinion(o models.Opinion) (interface{}, error) {
@@ -23,9 +23,9 @@ func (m *PostgreSql) AddNewOpinion(o models.Opinion) (interface{}, error) {
 	fmt.Println(o)
 
 	if err != nil {
-		fmt.Println(err)
+		return 0, err
 	}
-	return id, err
+	return id, nil
 }
 
 func (m *PostgreSql) AddNewUser(u models.User) (interface{}, error) {
@@ -131,25 +131,25 @@ func (m *PostgreSql) ListPizzasWithOpinins() (models.ListPizzaOpinions, error) {
 	return listPO, nil
 }
 
-func (m *PostgreSql) Login(u models.User) bool {
+func (m *PostgreSql) Login(u models.User) (bool, error) {
 	var users models.User
 	sqlStatement := `select username, password from users`
 	rows, err := m.client.Query(sqlStatement)
 
 	if err != nil {
-		fmt.Println(err)
+		return false, err
 	}
 
 	for rows.Next() {
 		err := rows.Scan(&users.Username, &users.Password)
 		if err != nil {
-			log.Fatal(err)
+			return false, err
 		}
 		if users.Username == u.Username && users.Password == u.Password {
 			fmt.Println("Witaj ", u.Username)
-			return true
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }

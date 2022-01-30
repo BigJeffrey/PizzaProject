@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,17 +15,37 @@ type Controller struct {
 	Dao interfaces.AppDao
 }
 
-func ReadBody(r *http.Request) models.Pizza {
+func ReadBody(r *http.Request, w http.ResponseWriter) (models.Pizza, error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		return models.Pizza{}, err
 	}
 
 	var converted models.Pizza
 	err = json.Unmarshal(body, &converted)
 	if err != nil {
-		log.Fatal(err)
+		return models.Pizza{}, err
 	}
 
-	return converted
+	return converted, nil
+}
+
+func ReturnMessage(message string, err error, w http.ResponseWriter, status int) {
+	var messageFmt string
+	if err != nil {
+		messageFmt = fmt.Sprintf("%s: %s", message, err)
+	} else {
+		messageFmt = message
+	}
+	jstr := models.ErrorJson{
+		Messagge: messageFmt,
+	}
+	rjson, err := json.Marshal(jstr)
+	if err != nil {
+		log.Println("Error")
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(rjson)
 }

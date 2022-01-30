@@ -11,6 +11,6 @@ type AppDao interface {
 	ListPizzasWithOpinins() (models.ListPizzaOpinions, error)
 	AddNewOpinion(o models.Opinion) (interface{}, error)
 	AddNewUser(u models.User) (interface{}, error)
-	Login(u models.User) bool
+	Login(u models.User) (bool, error)
 	Disconnect()
 }

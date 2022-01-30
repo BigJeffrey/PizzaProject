@@ -2,36 +2,31 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"pizza/models"
 )
 
 func (c *Controller) AddNewOpinion(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Dodawnie nowej opinii")
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
 	var newOpinion models.Opinion
 	err = json.Unmarshal(body, &newOpinion)
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
 
-	newResult, err := c.Dao.AddNewOpinion(newOpinion)
+	_, err = c.Dao.AddNewOpinion(newOpinion)
 
 	if err != nil {
-		log.Fatal(err)
+		ReturnMessage("Something went wrong", err, w, http.StatusBadRequest)
+		return
 	}
-	fmt.Println(newResult)
-	fmt.Println("ok")
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newOpinion)
+	ReturnMessage("This opinion was succesfully added", nil, w, http.StatusCreated)
 }

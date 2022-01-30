@@ -2,7 +2,6 @@ package mongodao
 
 import (
 	"fmt"
-	"log"
 	"pizza/models"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -36,7 +35,7 @@ func (m *Mongo) DeletePizza(name string) (interface{}, error) {
 func (m *Mongo) ListPizzasWithOpinins() (models.ListPizzaOpinions, error) {
 	cursor, err := m.GetPizzaList().Find(m.ctx, bson.M{})
 	if err != nil {
-		log.Fatal(err)
+		return models.ListPizzaOpinions{}, err
 	}
 
 	var main models.Pizza
@@ -49,18 +48,18 @@ func (m *Mongo) ListPizzasWithOpinins() (models.ListPizzaOpinions, error) {
 	for cursor.Next(m.ctx) {
 		cursor2, err := m.GetOpinions().Find(m.ctx, bson.M{})
 		if err != nil {
-			log.Panicln(err)
+			return models.ListPizzaOpinions{}, err
 		}
 
 		err = cursor.Decode(&main)
 		if err != nil {
-			log.Panicln(err)
+			return models.ListPizzaOpinions{}, err
 		}
 
 		for cursor2.Next(m.ctx) {
 			err := cursor2.Decode(&opin)
 			if err != nil {
-				log.Panicln(err)
+				return models.ListPizzaOpinions{}, err
 			}
 			pid := fmt.Sprint("ObjectID(\"", opin.PizzaId, "\")")
 			mid := fmt.Sprint(main.ID)
@@ -99,26 +98,25 @@ func (m *Mongo) AddNewOpinion(o models.Opinion) (interface{}, error) {
 	return nowaResult, err
 }
 
-func (m *Mongo) Login(u models.User) bool {
+func (m *Mongo) Login(u models.User) (bool, error) {
 	result, err := m.GetUsers().Find(m.ctx, bson.M{})
-
 	if err != nil {
-		log.Fatal(err)
+		return false, err
 	}
 
 	for result.Next(m.ctx) {
 		var daneBaza models.User
 		err := result.Decode(&daneBaza)
 		if err != nil {
-			log.Fatal(err)
+			return false, err
 		}
 
 		if daneBaza.Username == u.Username && daneBaza.Password == u.Password {
-			return true
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
 
 func (m *Mongo) AddNewUser(u models.User) (interface{}, error) {
