@@ -65,8 +65,7 @@ func (m *Mongo) ListPizzasWithOpinins() (models.ListPizzaOpinions, error) {
 			mid := fmt.Sprint(main.ID)
 
 			if pid == mid {
-				s := fmt.Sprintf("%s, %s, %s, %s", main.Name, main.Size, opin.Opinions, opin.Score)
-				fmt.Println(s)
+				//s := fmt.Sprintf("%s, %s, %s, %s", main.Name, main.Size, opin.Opinions, opin.Score)
 				tabOpin = append(tabOpin, models.Opinion{
 					ID:       opin.ID,
 					Score:    opin.Score,

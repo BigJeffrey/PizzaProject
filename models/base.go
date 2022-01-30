@@ -31,5 +31,5 @@ type ListPizzaOpinions struct {
 }
 
 type ErrorJson struct {
-	Messagge string
+	Message string
 }

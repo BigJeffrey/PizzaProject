@@ -25,7 +25,7 @@ func handleRequest(c *controllers.Controller, m *middlewares.Middleware) {
 
 	myRouter.Use(m.IsAutorised)
 
-	log.Fatal(http.ListenAndServe(":8085", myRouter))
+	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
 func main() {

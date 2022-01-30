@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"pizza/dao/interfaces"
@@ -37,15 +36,12 @@ func ReturnMessage(message string, err error, w http.ResponseWriter, status int)
 	} else {
 		messageFmt = message
 	}
+
 	jstr := models.ErrorJson{
-		Messagge: messageFmt,
-	}
-	rjson, err := json.Marshal(jstr)
-	if err != nil {
-		log.Println("Error")
+		Message: messageFmt,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(rjson)
+	json.NewEncoder(w).Encode(jstr)
 }

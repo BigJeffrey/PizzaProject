@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 	"pizza/controllers"
 
@@ -11,6 +12,7 @@ var mySignedKey = []byte("mySecredPhrase")
 
 func (m *Middleware) IsAutorised(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.RequestURI)
 		if r.RequestURI == "/login" {
 			next.ServeHTTP(w, r)
 			return
@@ -18,7 +20,12 @@ func (m *Middleware) IsAutorised(next http.Handler) http.Handler {
 
 		cookie, err := r.Cookie("token")
 		if err != nil {
-			controllers.ReturnMessage("Uzytkownik nie jest zalogowany lub sesja wygasła", err, w, http.StatusUnauthorized)
+			if err == http.ErrNoCookie {
+				controllers.ReturnMessage("Pleas log in first", nil, w, http.StatusUnauthorized)
+				return
+			}
+			controllers.ReturnMessage("Pleas log in first", nil, w, http.StatusUnauthorized)
+			return
 		}
 
 		tokenStr := cookie.Value
@@ -27,13 +34,15 @@ func (m *Middleware) IsAutorised(next http.Handler) http.Handler {
 			return mySignedKey, nil
 		})
 		if err != nil {
-			controllers.ReturnMessage("Uzytkownik nie jest zalogowany lub sesja wygasła", err, w, http.StatusUnauthorized)
+			controllers.ReturnMessage("Pleas log in first", nil, w, http.StatusUnauthorized)
+			return
 		}
 
 		if tkn.Valid {
 			next.ServeHTTP(w, r)
 		} else {
-			controllers.ReturnMessage("Uzytkownik nie jest zalogowany lub sesja wygasła", err, w, http.StatusUnauthorized)
+			controllers.ReturnMessage("Pleas log in first", nil, w, http.StatusUnauthorized)
+			return
 		}
 	})
 }
