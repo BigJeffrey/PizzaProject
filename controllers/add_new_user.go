@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"pizza/models"
 	"pizza/rabbit"
@@ -30,11 +31,12 @@ func (c *Controller) AddNewUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = rabbit.SendRabbitMessage(newUser.Email, "new_user")
-	if err != nil {
-		ReturnMessage("Unable to send email but user was succesfully added", err, w, http.StatusInternalServerError)
-		return
-	}
+	go func() {
+		err = rabbit.SendRabbitMessage(newUser.Email, "new_user")
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	ReturnMessage("New user was succesfully added and welcome email was sent", nil, w, http.StatusCreated)
 }
