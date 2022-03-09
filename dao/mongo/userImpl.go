@@ -18,8 +18,8 @@ func (m *Mongo) AddNewPizza(p models.Pizza) (interface{}, error) {
 
 func (m *Mongo) UpdatePizza(p models.Pizza) (interface{}, error) {
 	updatedBson := bson.D{
-		{"$set", bson.D{
-			{"Size", p.Size},
+		{Key: "$set", Value: bson.D{
+			{Key: "Size", Value: p.Size},
 		}},
 	}
 

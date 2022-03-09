@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"pizza/dao/interfaces"
@@ -43,5 +44,8 @@ func ReturnMessage(message string, err error, w http.ResponseWriter, status int)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(jstr)
+	err = json.NewEncoder(w).Encode(jstr)
+	if err != nil {
+		log.Println(err)
+	}
 }

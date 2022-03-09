@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -13,5 +14,8 @@ func (c *Controller) ListPizzasWithOpinins(w http.ResponseWriter, r *http.Reques
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	err = json.NewEncoder(w).Encode(result)
+	if err != nil {
+		log.Println(err)
+	}
 }

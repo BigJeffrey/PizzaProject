@@ -50,7 +50,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 				Value:   validToken,
 				Expires: time.Now().Add(time.Minute * 10),
 			})
-		err = nil
+
 		err = rabbit.SendRabbitMessage(loginData.Email, "login")
 		ReturnMessage("User signed in", err, w, http.StatusOK)
 	} else {

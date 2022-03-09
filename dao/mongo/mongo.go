@@ -45,7 +45,10 @@ func (m *Mongo) connect() {
 }
 
 func (m *Mongo) Disconnect() {
-	m.client.Disconnect(m.ctx)
+	err := m.client.Disconnect(m.ctx)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (m *Mongo) GetPizzaList() *mongo.Collection {

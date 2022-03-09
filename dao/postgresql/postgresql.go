@@ -3,6 +3,7 @@ package postgresqldao
 import (
 	"context"
 	"database/sql"
+	"log"
 	"os"
 	"sync"
 
@@ -22,7 +23,10 @@ func NewPostgreSql(ctx context.Context) *PostgreSql {
 	once.Do(func() {
 		instance = new(PostgreSql)
 		instance.ctx = ctx
-		instance.connect()
+		err := instance.connect()
+		if err != nil {
+			log.Println(err)
+		}
 	})
 
 	return instance

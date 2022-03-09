@@ -125,9 +125,6 @@ func (m *PostgreSql) ListPizzasWithOpinins() (models.ListPizzaOpinions, error) {
 		ListPizzaWithOpinions: tab,
 	}
 
-	listPO = models.ListPizzaOpinions{
-		ListPizzaWithOpinions: tab,
-	}
 	return listPO, nil
 }
 
